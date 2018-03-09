@@ -24,8 +24,9 @@ public class CurrencyOperation{
     //convert euro to dollar
     public String dollarConverter(String euro, float multiplier){
         //remove quotation mark
-        
-        euro = euro.substring(1,euro.length()-1).replace(",", ".");  
+       	if(!euro.startsWith(""+euroSign))
+	    System.err.println("Invalid euro currency format in " + euro); 
+        euro = euro.substring(1,euro.length()).replace(",", ".");  
         //check if euro is valid
         if(!checkException.isValidPrice(euro)){
             System.err.println("Invalid euro currency format in " + euro);
