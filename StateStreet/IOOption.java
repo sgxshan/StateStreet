@@ -3,7 +3,7 @@ package StateStreet;
 import java.io.*;
 import java.util.*;
 import java.util.regex.*;
-public class CurrencyConvert{
+public class IOOption{
 
     private static boolean isFirstLine = true;
     private static int columnSize;
@@ -12,14 +12,9 @@ public class CurrencyConvert{
     private static Arguments arguments = new Arguments();
     private static CheckException checkException = new CheckException();
     private static CurrencyOperation currencyOperation = new CurrencyOperation();
-    private static IOOption iooption= new IOOption();
     
-    public static void main(String[] args) throws FileNotFoundException, IOException, FileNotFoundException, UnsupportedEncodingException{
-        if(checkException.isIOOption(args)){
-            iooption.handler(args);
-            return;
-        }
-        
+    public static void handler(String[] args) throws FileNotFoundException, IOException, FileNotFoundException, UnsupportedEncodingException{
+
         arguments.addArgDouble("Multiply currency value by N(Integer or Float) for the current conversion rate", "multiplier N");
         arguments.addArgDouble("convert CSV field N (Integer) ","field N");
         arguments.addArgSingle("Write to output file","o output");
@@ -28,15 +23,18 @@ public class CurrencyConvert{
         
         int field = arguments.getField();
         float multiplier = arguments.getMultiplier();
-        
-        Scanner inData = new Scanner(System.in);
-         
+        String fileName = arguments.getInput();
+        String newFile = arguments.getOutput();
+
+        File csv = new File(fileName);  
+        OutputStreamWriter ow = new OutputStreamWriter(new FileOutputStream(newFile),"UTF-8");
+        BufferedReader br = new BufferedReader(new FileReader(csv));
+     
         Pattern pattern = Pattern.compile("(,)?((\"[^\"]*(\"{2})*[^\"]*\")*[^,]*)");  
         String line = new String(); 
         StringBuilder sb = new StringBuilder();
         
-        while(inData.hasNextLine()){            
-            line = inData.nextLine();
+        while((line = br.readLine()) != null){            
             List<String> strList = new ArrayList<>(); 
             checkException.checkCommas(line);
             Matcher matcher = pattern.matcher(line);  
@@ -55,7 +53,8 @@ public class CurrencyConvert{
                 columnSize = strList.size();
                 for(String s:strList)
                     sb.append(s).append(",");
-                System.out.print(sb.deleteCharAt(sb.length()-1).toString() + "\r\n");
+                ow.write(sb.deleteCharAt(sb.length()-1).toString());
+                ow.write("\r\n");
                 isFirstLine = false;
                 sb = new StringBuilder();
                 continue;
@@ -92,10 +91,13 @@ public class CurrencyConvert{
                    
             }
             sb.deleteCharAt(sb.length()-1);
-            System.out.print(sb.toString() + "\r\n");
+            ow.write(sb.toString());
+            ow.write("\r\n");
+            
             sb = new StringBuilder();
         }
-        
+        ow.flush();
+        ow.close();   
     }
 }
 

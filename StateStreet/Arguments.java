@@ -6,6 +6,7 @@ import java.util.*;
 
 public class Arguments {
     private final Map<String, String> singleDashExplain = new HashMap<>();
+    private final Map<String, String> singleDashValue = new HashMap<>();
     private final Map<String, String> doubleDashExplain = new HashMap<>();
     private final Map<String, String> doubleDashValue = new HashMap<>();
 
@@ -42,9 +43,16 @@ public class Arguments {
             return;
         }
 
-        if("--field".equals(args[0])&&"--multiplier".equals(args[2])){
+        if(args.length==8&&"--field".equals(args[0])&&"--multiplier".equals(args[2])&&"-i".equals(args[4])&&"-o".equals(args[6])){
             doubleDashValue.put(args[0], args[1]);
             doubleDashValue.put(args[2], args[3]);
+            singleDashValue.put(args[4], args[5]);
+            singleDashValue.put(args[6], args[7]);
+        }
+        else if("--field".equals(args[0])&&"--multiplier".equals(args[2])){
+            doubleDashValue.put(args[0], args[1]);
+            doubleDashValue.put(args[2], args[3]);
+            
         }
         else
             helper();
@@ -59,5 +67,13 @@ public class Arguments {
         return Float.parseFloat(doubleDashValue.get("--multiplier"));
     }
        
+    public String getInput(){
+        return singleDashValue.get("-i");
+    }
+        
+    public String getOutput(){
+        return singleDashValue.get("-o");
+    }
+   
     
 }

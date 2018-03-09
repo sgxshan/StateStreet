@@ -65,6 +65,14 @@ public class CheckException{
         return true;  
     }
     
+    public static boolean isIOOption(String[] args){
+        if(args.length!=8||!isValidMultiplier(args[3])||!isValidField(args[1])){
+            return false;
+        }
+
+        return "--field".equals(args[0])&&"--multiplier".equals(args[2])&&"-i".equals(args[4])&&"-o".equals(args[6]);
+    }
+    
 }
 
 
